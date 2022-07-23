@@ -6,7 +6,7 @@
   import { onMount } from 'svelte';
   import http from '$lib/http';
   import type { IPlay } from '$lib/types';
-
+  import ded from '$lib/icon/ded.svg'
 
   let plays: IPlay[] = [];
   onMount(() => {
@@ -21,6 +21,7 @@
 
 <section>
   <h1>А Где Дед?</h1>
+  <img src={ded} width="100px" alt="Где был дед">
 
   <h2 class="mb-5">Помощник в заучивании сценариев для спектаклей</h2>
 
@@ -35,6 +36,7 @@
       </li>
     {/each}
   </ul>
+  <br><br>
 </section>
 
 <style>
