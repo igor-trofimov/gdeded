@@ -111,6 +111,11 @@ button:focus:not(:focus-visible) {
   }
 }
 
+@media (max-width: 720px) {
+  .container {
+    padding: 0.5rem;
+  }
+}
 .d-flex {
   display: flex;
 }

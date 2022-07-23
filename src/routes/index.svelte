@@ -28,8 +28,9 @@
     {#each plays as play (play)}
       <li>
         <a href="/play/{play.id}" sveltekit:prefetch>
-          <div>{play.title}</div>
-          <em>{play.description}</em>
+          <h3>{play.title}</h3>
+          <div><em>{play.description}</em></div>
+          <small>{play.roles.length} человек</small>
         </a>
       </li>
     {/each}
@@ -60,5 +61,10 @@
     padding: 1rem;
     box-shadow: 0 0 3px var(--primary-color);
     border-radius: 1rem;
+    width: 300px;
+  }
+  h3  {
+    margin-top: 0;
+    margin-bottom: 1rem;
   }
 </style>
