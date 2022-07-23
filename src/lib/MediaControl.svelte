@@ -1,20 +1,36 @@
 <script lang="ts">
-  import type { ISpeech } from './types';
   import Icon from './icon/Icon.svelte';
 
   let mediaRecorder;
   let audioBlob;
   let recording = false;
   let audio;
+  let paused;
+  let mode: 'listen' | 'play';
+  export let audioUrl;
   export let onSave;
-  export let selectedSpeech: ISpeech;
-  export let onClickPrev
-  export let onClickNext
+  export let onClickPrev;
+  export let onClickNext;
+
   const play = () => {
-    audio.src = selectedSpeech.audio_url || URL.createObjectURL(audioBlob);
+    if (mode !== 'play') audio.src = audioUrl;
     audio.play();
+    mode = 'play';
   };
-  const stop = () => mediaRecorder.stop();
+
+  const pause = () => {
+    audio.pause();
+  };
+  const listen = () => {
+    if (mode !== 'listen') audio.src = URL.createObjectURL(audioBlob);
+    audio.play();
+    mode = 'listen';
+  };
+
+  const stop = () => {
+    mediaRecorder.stop();
+    mediaRecorder = null;
+  };
 
   const record = () => {
     recording = true;
@@ -35,37 +51,50 @@
         });
       });
   };
+
+  const save = () => {
+    onSave(audioBlob);
+    audioBlob = null;
+    mediaRecorder = null;
+  };
 </script>
 
-<div class="d-flex media-control align-items-center">
-  {#if mediaRecorder}
-    <Icon onClick={stop} name="stop" title="Остановить" />
-  {/if}
-  {#if onClickPrev}
-    <Icon name="prev" onClick={onClickPrev} title="Предыдущая запись" />
-  {/if}
-  {#if audioBlob || selectedSpeech.audio_url}
-    <Icon name="play" onClick={play} title="Проиграть" />
-  {/if}
-  {#if onClickNext}
-    <Icon name="next" onClick={onClickNext} title="Следующая запись" />
-  {/if}
-  {#if !mediaRecorder}
-    <Icon name="mic" onClick={record} title="Record" />
-  {/if}
-  {#if audioBlob}
-    <Icon name="save" onClick={() => onSave(audioBlob)} title="Сохранить" />
-  {/if}
-  <audio bind:this={audio} />
+<div class="d-flex media-control align-items-center justify-content-between">
+  <div class="control-section">
+    {#if onClickPrev}
+      <Icon name="prev" onClick={onClickPrev} title="Предыдущая запись" />
+    {/if}
+    {#if paused !== false && (audioUrl || audioBlob)}
+      <Icon name="play" onClick={play} title="Проиграть" />
+    {/if}
+    {#if paused === false}
+      <Icon name="pause" onClick={pause} title="Пауза" />
+    {/if}
+    {#if onClickNext}
+      <Icon name="next" onClick={onClickNext} title="Следующая запись" />
+    {/if}
+  </div>
+  <div class="control-section">
+    {#if audioBlob}
+      <Icon onClick={listen} name="listen" title="Прослушать записанное" />
+      <Icon name="save" onClick={save} title="Сохранить" />
+    {/if}
+    {#if !mediaRecorder}
+      <Icon name="mic" onClick={record} title="Записать речь" />
+    {/if}
+    {#if mediaRecorder}
+      <Icon onClick={stop} name="stop" title="Остановить" />
+    {/if}
+  </div>
+  <audio bind:this={audio} bind:paused />
 </div>
 
 <style>
   .media-control {
     padding: 0.5rem;
-    justify-content: center;
   }
 
-  .media-control > :global(div) {
+  .control-section > :global(div) {
     margin: 0 0.5rem;
   }
 </style>

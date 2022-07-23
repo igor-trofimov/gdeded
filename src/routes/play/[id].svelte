@@ -1,3 +1,7 @@
+<script context="module" lang="ts">
+  export const prerender = true;
+</script>
+
 <script lang="ts">
   import type { IPlay, ISpeech } from '$lib/types';
   import { longpress } from '$lib/longpress.js';
@@ -27,11 +31,14 @@
     if (data.audio) {
       let formData = new FormData();
       formData.append('speech[audio]', data.audio);
-      http.put(`/speeches/${data.id}`, formData, {
+      http.put(`/speeches/${data.id}.json`, formData, {
         headers: { 'Content-Type': 'multipart/form-data', }
-      }).then(({ data }) => selectedItem = data);
+      }).then(({ data }) => {
+        speeches = speeches.map((s) => s.id === data.id ? data : s);
+        selectedItem = data;
+      });
     } else {
-      http.put(`/speeches/${data.id}`, data);
+      http.put(`/speeches/${data.id}.json`, data);
     }
   };
   const handleClick = (item) => {
@@ -46,6 +53,15 @@
       scrollToIndex(index);
     }
   };
+
+  const goto = (item) => {
+    scrollToIndex(speeches.findIndex((s) => s.id === item.id));
+    selectedItem = item;
+  };
+
+  $: currentIndex = speeches.findIndex((s) => s.id === selectedItem?.id);
+  $: prevSpeechItem = speeches.slice(0, currentIndex - 1).reverse().find((s) => s.audio_url);
+  $: nextSpeechItem = speeches.slice(currentIndex + 1).find((s) => s.audio_url);
 </script>
 
 <svelte:head>
@@ -78,6 +94,7 @@
       class="speech-item"
       class:selected={selectedItem === item}
       class:matched={item.text.startsWith(selectedRole)}
+      class:withAudio={item.audio_url}
       on:click={() => handleClick(item)}
       use:longpress
     >
@@ -87,11 +104,18 @@
 </main>
 
 {#if selectedItem}
-  <footer>
-    <div class="container">
-      <MediaControl selectedSpeech={selectedItem} onSave={(audio) => handleUpdate({ id: selectedItem.id, audio })} />
-    </div>
-  </footer>
+  {#key selectedItem}
+    <footer>
+      <div class="container">
+        <MediaControl
+          audioUrl={selectedItem.audio_url}
+          onSave={(audio) => handleUpdate({ id: selectedItem.id, audio })}
+          onClickPrev={prevSpeechItem && (() => goto(prevSpeechItem))}
+          onClickNext={nextSpeechItem && (() => goto(nextSpeechItem))}
+        />
+      </div>
+    </footer>
+  {/key}
 {/if}
 
 
@@ -104,6 +128,7 @@
     cursor: pointer;
     padding: 1rem;
     transition: all ease-in-out 0.3s;
+    border-left: 3px solid white;
   }
 
   .filtered .speech-item {
@@ -119,7 +144,11 @@
   }
 
   .speech-item.selected {
-    border-left: 3px solid cadetblue;
+    border-color: cadetblue !important;
+  }
+
+  .speech-item.withAudio {
+    border-color: #cccccc;
   }
 
   footer {

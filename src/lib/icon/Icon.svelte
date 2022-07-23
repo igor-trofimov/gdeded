@@ -6,6 +6,7 @@
   import prev from './prev.svg';
   import save from './save.svg';
   import stop from './stop.svg';
+  import listen from './listen.svg';
 
   const icons = {
     mic,
@@ -15,13 +16,15 @@
     prev,
     save,
     stop,
+    listen
   };
 
-  type iconNames = 'mic' | 'next' | 'pause' | 'play' | 'prev' | 'save' | 'stop'
+  type iconNames = 'mic' | 'next' | 'pause' | 'play' | 'prev' | 'save' | 'stop' | 'listen'
   export let name: iconNames;
   export let title = '';
   export let onClick;
 </script>
+
 <div class="icon" title={title} on:click={onClick}>
   <img src={icons[name]} alt={title} />
 </div>
