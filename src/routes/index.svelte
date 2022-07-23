@@ -1,61 +1,64 @@
 <script context="module" lang="ts">
-	export const prerender = true;
+  export const prerender = true;
 </script>
 
 <script lang="ts">
-	import Counter from '$lib/Counter.svelte';
+  import { onMount } from 'svelte';
+  import http from '$lib/http';
+  import type { IPlay } from '$lib/types';
+
+
+  let plays: IPlay[] = [];
+  onMount(() => {
+    http.get('/play').then(({ data }) => plays = data);
+  });
 </script>
 
 <svelte:head>
-	<title>Home</title>
-	<meta name="description" content="Svelte demo app" />
+  <title>А Где Дед?</title>
+  <meta name="description" content="ПО для заучивания сценариев" />
 </svelte:head>
 
 <section>
-	<h1>
-		<span class="welcome">
-			<picture>
-				<source srcset="svelte-welcome.webp" type="image/webp" />
-				<img src="svelte-welcome.png" alt="Welcome" />
-			</picture>
-		</span>
+  <h1>А Где Дед?</h1>
 
-		to your new<br />SvelteKit app
-	</h1>
+  <h2 class="mb-5">Помощник в заучивании сценариев для спектаклей</h2>
 
-	<h2>
-		try editing <strong>src/routes/index.svelte</strong>
-	</h2>
-
-	<Counter />
+  <ul>
+    {#each plays as play (play)}
+      <li>
+        <a href="/play/{play.id}" sveltekit:prefetch>
+          <div>{play.title}</div>
+          <em>{play.description}</em>
+        </a>
+      </li>
+    {/each}
+  </ul>
 </section>
 
 <style>
-	section {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		flex: 1;
-	}
+  section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+  }
 
-	h1 {
-		width: 100%;
-	}
+  h1 {
+    width: 100%;
+  }
 
-	.welcome {
-		display: block;
-		position: relative;
-		width: 100%;
-		height: 0;
-		padding: 0 0 calc(100% * 495 / 2048) 0;
-	}
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
 
-	.welcome img {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		top: 0;
-		display: block;
-	}
+  li {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    box-shadow: 0 0 3px var(--primary-color);
+    border-radius: 1rem;
+  }
 </style>
