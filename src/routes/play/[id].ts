@@ -1,7 +1,7 @@
 import http from "$lib/http";
 
 /** @type {import('@sveltejs/kit').RequestHandler} */
-export async function get({ params }) {
+export async function GET({ params }) {
   const { data } = await http.get(`/play/${params.id}.json`);
 
   if (data) {
