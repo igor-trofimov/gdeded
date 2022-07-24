@@ -9,6 +9,7 @@ module.exports = shipit => {
       deployTo: '/home/deploy/gdeded',
       repositoryUrl: 'git@github.com:Traf333/gdeded.git',
       keepReleases: 5,
+      branch: 'main',
       shared: {
         overwrite: true,
         dirs: ['node_modules'],
