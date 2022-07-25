@@ -3,15 +3,10 @@
 </script>
 
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import http from '$lib/http';
   import type { IPlay } from '$lib/types';
   import ded from '$lib/icon/ded.svg'
 
-  let plays: IPlay[] = [];
-  onMount(() => {
-    http.get('/play').then(({ data }) => plays = data);
-  });
+  export let plays: IPlay[];
 </script>
 
 <svelte:head>
