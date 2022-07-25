@@ -9,6 +9,7 @@
   import { onMount } from 'svelte';
   import http from '$lib/http';
   import MediaControl from '$lib/MediaControl.svelte';
+  import Loader from '../../lib/Loader.svelte';
 
   export let play: IPlay;
   export let speeches: ISpeech[] = [];
@@ -89,18 +90,22 @@
       <div class="role" class:active={role === selectedRole} on:click={() => toggleRole(role)}>{role}</div>
     {/each}
   </div>
-  <VirtualList items={speeches} let:item bind:scrollToIndex>
-    <div
-      class="speech-item"
-      class:selected={selectedItem === item}
-      class:matched={item.text.startsWith(selectedRole)}
-      class:withAudio={item.audio_url}
-      on:click={() => handleClick(item)}
-      use:longpress
-    >
-      {item.text}
-    </div>
-  </VirtualList>
+  {#if speeches.length > 0}
+    <VirtualList items={speeches} let:item bind:scrollToIndex>
+      <div
+        class="speech-item"
+        class:selected={selectedItem === item}
+        class:matched={item.text.startsWith(selectedRole)}
+        class:withAudio={item.audio_url}
+        on:click={() => handleClick(item)}
+        use:longpress
+      >
+        {item.text}
+      </div>
+    </VirtualList>
+  {:else}
+    <Loader />
+  {/if}
 </main>
 
 {#if selectedItem}

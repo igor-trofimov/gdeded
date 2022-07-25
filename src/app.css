@@ -132,6 +132,10 @@ button:focus:not(:focus-visible) {
   justify-content: space-between;
 }
 
+.justify-content-center {
+  justify-content: center;
+}
+
 .flex-1 {
   flex: 1
 }
