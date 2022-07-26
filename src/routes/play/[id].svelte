@@ -122,7 +122,9 @@
         use:longpress
       >
         <div class="item-actions">
-          <Icon name="edit" onClick={() => editedItem = item} />
+          {#if play.active}
+            <Icon name="edit" onClick={() => editedItem = item} />
+          {/if}
         </div>
         {@html item.text}
       </div>
@@ -131,7 +133,7 @@
     <Loader />
   {/if}
 </main>
-{#if editedItem}
+{#if play.active && editedItem}
   <Modal on:close={close}>
     <span slot="header">Редактирование текста</span>
     <p contenteditable="true" bind:innerHTML={editedItem.text} autofocus>
@@ -161,6 +163,7 @@
           onSave={(audio) => handleUpdate({ id: selectedItem.id, audio })}
           onClickPrev={prevSpeechItem && (() => goto(prevSpeechItem))}
           onClickNext={nextSpeechItem && (() => goto(nextSpeechItem))}
+          readonly={!play.active}
         />
       </div>
     </footer>

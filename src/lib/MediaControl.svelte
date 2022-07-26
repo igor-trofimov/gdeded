@@ -7,6 +7,7 @@
   let audio;
   let paused;
   let mode: 'listen' | 'play';
+  export let readonly;
   export let audioUrl;
   export let onSave;
   export let onClickPrev;
@@ -79,7 +80,7 @@
       <Icon onClick={listen} name="listen" title="Прослушать записанное" />
       <Icon name="save" onClick={save} title="Сохранить" />
     {/if}
-    {#if !mediaRecorder}
+    {#if !readonly && !mediaRecorder}
       <Icon name="mic" onClick={record} title="Записать речь" />
     {/if}
     {#if mediaRecorder}
