@@ -11,6 +11,7 @@
   import MediaControl from '$lib/MediaControl.svelte';
   import Loader from '../../lib/Loader.svelte';
   import Modal from '../../lib/Modal.svelte';
+  import Icon from '../../lib/icon/Icon.svelte';
 
   export let play: IPlay;
   export let speeches: ISpeech[] = [];
@@ -71,6 +72,14 @@
     editedItem = null;
   };
 
+  const handleDelete = (item) => {
+    http.delete(`/speeches/${item.id}.json`)
+      .then(() => {
+        speeches = speeches.filter((i) => i.id !== item.id);
+        editedItem = null;
+      });
+  };
+
   $: currentIndex = speeches.findIndex((s) => s.id === selectedItem?.id);
   $: prevSpeechItem = speeches.slice(0, currentIndex - 1).reverse().find((s) => s.audio_url);
   $: nextSpeechItem = speeches.slice(currentIndex + 1).find((s) => s.audio_url);
@@ -112,7 +121,10 @@
         on:long={() => editedItem = item}
         use:longpress
       >
-        {item.text}
+        <div class="item-actions">
+          <Icon name="edit" onClick={() => editedItem = item} />
+        </div>
+        {@html item.text}
       </div>
     </VirtualList>
   {:else}
@@ -125,9 +137,15 @@
     <p contenteditable="true" bind:innerHTML={editedItem.text} autofocus>
     </p>
     <div class="d-flex justify-content-between" slot="footer">
-      <button class="btn-secondary" on:click={close}>
-        Отменить
-      </button>
+      <div>
+        <button class="btn-secondary" on:click={close}>
+          Отменить
+        </button>
+        <button class="btn-danger" on:click={() => handleDelete(editedItem)}>
+          Удалить
+        </button>
+      </div>
+
       <button class="btn-primary" on:click={save}>
         Сохранить
       </button>
@@ -160,6 +178,25 @@
     padding: 1rem;
     transition: all ease-in-out 0.3s;
     border-left: 3px solid white;
+    position: relative;
+  }
+
+  .item-actions {
+    display: none;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background-color: white;
+    border-radius: 8px;
+  }
+
+  .item-actions > :global(div) {
+    width: 16px;
+    margin: 4px;
+  }
+
+  .speech-item:hover .item-actions {
+    display: block;
   }
 
   .filtered .speech-item {

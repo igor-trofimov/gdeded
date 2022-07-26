@@ -9,6 +9,8 @@
   import listen from './listen.svg';
   import ded from './ded.svg';
   import cross from './cross.svg';
+  import edit from './edit.svg';
+  import trash from './trash.svg';
 
   const icons = {
     mic,
@@ -20,10 +22,10 @@
     stop,
     listen,
     ded,
-    cross
+    cross, edit, trash
   };
 
-  type iconNames = 'mic' | 'next' | 'pause' | 'play' | 'prev' | 'save' | 'stop' | 'listen' | 'ded' | 'cross'
+  type iconNames = 'mic' | 'next' | 'pause' | 'play' | 'prev' | 'save' | 'stop' | 'listen' | 'ded' | 'cross' | 'edit' | 'trash'
   export let name: iconNames;
   export let title = '';
   export let onClick;

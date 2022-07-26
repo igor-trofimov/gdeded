@@ -59,6 +59,7 @@
   --blue-dark-3: #1369a3;
   --blue-dark-4: #085080;
   --blue-dark-5: #094166;
+  --red: #f6413e;
 }
 
 body {
@@ -150,6 +151,7 @@ button:focus:not(:focus-visible) {
   h1 {
     font-size: 2.4rem;
   }
+
   main {
     margin: 0 20%;
   }
@@ -160,6 +162,7 @@ button:focus:not(:focus-visible) {
     padding: 0.5rem;
   }
 }
+
 .d-flex {
   display: flex;
 }
@@ -242,12 +245,20 @@ button {
 button:focus {
   outline: none;
 }
+
 button.btn-primary {
   border: solid 1px var(--primary);
   background-color: var(--primary);
 }
+
 button.btn-secondary {
   border: solid 2px var(--light-15);
   background-color: var(--light);
   color: var(--light-90);
 }
+
+button.btn-danger {
+  border: solid 1px var(--red);
+  background-color: var(--red);
+}
+
