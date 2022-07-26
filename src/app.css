@@ -15,6 +15,50 @@
   --background-without-opacity: rgba(255, 255, 255, 0.7);
   --column-width: 42rem;
   --column-margin-top: 4rem;
+
+
+  --white: #fff;
+  --black: #000;
+  --light-10: #e0e3e4;
+  --light: #f5f5f6;
+  --light-5: #eff0f1;
+  --light-60: #848d91;
+  --light-50: #98a0a3;
+  --light-40: #adb3b6;
+  --light-70: #707a7f;
+  --light-80: #5c676d;
+  --light-15: #d9dcdd;
+  --light-90: #47545a;
+  --light-20: #d6d9da;
+  --light-30: #c1c6c8;
+  --dark: #334148;
+  --dark-20: #2c383e;
+  --dark-40: #273238;
+  --dark-60: #212a2f;
+  --dark-80: #1a2225;
+  --dark-100: #0d1113;
+  --primary-light-5: #b6bbc5;
+  --primary-light-3: #868d9e;
+  --primary-light-2: #6f778a;
+  --primary-light-1: #576076;
+  --primary: #3e4a63;
+  --primary-dark-1: #26334f;
+  --primary-light-4: #9ea4b1;
+  --primary-dark-2: #0d1c3c;
+  --primary-dark-3: #0c1936;
+  --primary-dark-4: #0b1730;
+  --primary-dark-5: #09132a;
+  --blue-light-5: #eef7fe;
+  --blue-light-4: #b4dff9;
+  --blue-light-3: #82c9f4;
+  --blue-light-2: #57b6f1;
+  --blue-light-1: #2da2ed;
+  --bl: #0092ee;
+  --blue-dark-1: #168bdd;
+  --blue-dark-2: #1481cd;
+  --blue-dark-3: #1369a3;
+  --blue-dark-4: #085080;
+  --blue-dark-5: #094166;
 }
 
 body {
@@ -176,3 +220,34 @@ button:focus:not(:focus-visible) {
   grid-area: footer;
 }
 
+
+/*Buttons*/
+button {
+  display: inline-flex;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  text-align: center;
+  line-height: 1.2;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: white;
+  transition: all 0.3s ease 0s;
+  min-height: 2rem;
+  padding: 0.25rem 0.5rem;
+}
+
+button:focus {
+  outline: none;
+}
+button.btn-primary {
+  border: solid 1px var(--primary);
+  background-color: var(--primary);
+}
+button.btn-secondary {
+  border: solid 2px var(--light-15);
+  background-color: var(--light);
+  color: var(--light-90);
+}

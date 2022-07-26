@@ -10,10 +10,12 @@
   import http from '$lib/http';
   import MediaControl from '$lib/MediaControl.svelte';
   import Loader from '../../lib/Loader.svelte';
+  import Modal from '../../lib/Modal.svelte';
 
   export let play: IPlay;
   export let speeches: ISpeech[] = [];
   let selectedItem: ISpeech;
+  let editedItem: ISpeech;
   let selectedRole: string;
   let scrollToIndex;
 
@@ -39,7 +41,11 @@
         selectedItem = data;
       });
     } else {
-      http.put(`/speeches/${data.id}.json`, data);
+      http.put(`/speeches/${data.id}.json`, data)
+        .then(({ data }) => {
+          speeches = speeches.map((s) => s.id === data.id ? data : s);
+          selectedItem = data;
+        });
     }
   };
   const handleClick = (item) => {
@@ -58,6 +64,11 @@
   const goto = (item) => {
     scrollToIndex(speeches.findIndex((s) => s.id === item.id));
     selectedItem = item;
+  };
+  const close = () => editedItem = null;
+  const save = () => {
+    handleUpdate({ id: editedItem.id, text: editedItem.text });
+    editedItem = null;
   };
 
   $: currentIndex = speeches.findIndex((s) => s.id === selectedItem?.id);
@@ -98,6 +109,7 @@
         class:matched={item.text.startsWith(selectedRole)}
         class:withAudio={item.audio_url}
         on:click={() => handleClick(item)}
+        on:long={() => editedItem = item}
         use:longpress
       >
         {item.text}
@@ -107,7 +119,21 @@
     <Loader />
   {/if}
 </main>
-
+{#if editedItem}
+  <Modal on:close={close}>
+    <span slot="header">Редактирование текста</span>
+    <p contenteditable="true" bind:innerHTML={editedItem.text} autofocus>
+    </p>
+    <div class="d-flex justify-content-between" slot="footer">
+      <button class="btn-secondary" on:click={close}>
+        Отменить
+      </button>
+      <button class="btn-primary" on:click={save}>
+        Сохранить
+      </button>
+    </div>
+  </Modal>
+{/if}
 {#if selectedItem}
   {#key selectedItem}
     <footer>
@@ -183,5 +209,11 @@
     padding-bottom: 1rem;
     margin-top: 0.5rem;
     overflow-x: auto;
+  }
+
+  [contenteditable] {
+    padding: 0.5em;
+    border: 1px solid #eee;
+    border-radius: 4px;
   }
 </style>
