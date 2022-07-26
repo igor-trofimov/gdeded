@@ -197,7 +197,7 @@ button:focus:not(:focus-visible) {
 }
 
 #app {
-  height: 100vh;
+  height: calc(100%);
 
   /* grid container settings */
   display: grid;
