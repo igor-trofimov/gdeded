@@ -61,6 +61,7 @@
   --blue-dark-5: #094166;
   --red: #f6413e;
 }
+
 html,
 body,
 #app, .play {
@@ -69,6 +70,7 @@ body,
 
 body {
   overflow: hidden;
+  margin: 0;
 }
 
 h1,
@@ -119,6 +121,14 @@ button {
 
 button:focus:not(:focus-visible) {
   outline: none;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.p-3 {
+  padding: 1rem;
 }
 
 .mb-3 {

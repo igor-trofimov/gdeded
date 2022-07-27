@@ -54,17 +54,16 @@
       selectedRole = null;
     } else {
       selectedRole = role;
-      const index = speeches.findIndex((r) => r.text.startsWith(role));
-      console.log(role, index);
-      scrollToIndex(index);
+      const item = speeches.find((r) => r.text.startsWith(role));
+      scrollToIndex(item.id);
     }
   };
-  const scrollToIndex = (idx) => {
-    const getMeTo = document.getElementById(idx);
+  const scrollToIndex = (id) => {
+    const getMeTo = document.getElementById(id);
     getMeTo.scrollIntoView({ behavior: 'smooth' });
   };
   const goto = (item) => {
-    scrollToIndex(speeches.findIndex((s) => s.id === item.id));
+    scrollToIndex(item.id);
     selectedItem = item;
   };
   const close = () => editedItem = null;
@@ -94,7 +93,7 @@
   <header>
     <div class="container d-flex align-items-center justify-content-between">
       <a href="/">← Назад</a>
-      <h2>{play.title}</h2>
+      <h2 class="cursor-pointer" on:click={() => scrollToIndex('roles')}>{play.title}</h2>
       <div class="burger">
         <svg viewBox="0 0 100 60" width="24" height="24">
           <rect width="100" height="6"></rect>
@@ -106,7 +105,7 @@
   </header>
 
   <section class="container" class:filtered={selectedRole}>
-    <div class="roles">
+    <div class="roles" id="roles">
       {#each play.roles as role (role)}
         <div class="role" class:active={role === selectedRole} on:click={() => toggleRole(role)}>{role}</div>
       {/each}
@@ -114,7 +113,7 @@
     {#if speeches.length > 0}
       {#each speeches as item, i (item)}
         <div
-          id={i}
+          id={item.id}
           class="speech-item"
           class:selected={selectedItem === item}
           class:matched={item.text.startsWith(selectedRole)}
@@ -171,7 +170,6 @@
       </footer>
     {/key}
   {/if}
-
 </div>
 
 <style>
