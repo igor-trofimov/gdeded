@@ -61,32 +61,14 @@
   --blue-dark-5: #094166;
   --red: #f6413e;
 }
+html,
+body,
+#app, .play {
+  height: 100%; /* needed for proper layout */
+}
 
 body {
-  min-height: 100vh;
-  margin: 0;
-}
-
-body::before {
-  content: '';
-  width: 80vw;
-  height: 100vh;
-  position: absolute;
-  top: 0;
-  left: 10vw;
-  z-index: -1;
-  background: radial-gradient(
-    50% 50% at 50% 50%,
-    var(--pure-white) 0%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  opacity: 0.05;
-}
-
-#svelte {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  overflow: hidden;
 }
 
 h1,
@@ -195,34 +177,6 @@ button:focus:not(:focus-visible) {
   max-width: 800px;
   margin: 0 auto;
 }
-
-#app {
-  height: calc(100%);
-
-  /* grid container settings */
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: auto 1fr auto;
-  grid-template-areas:
-    'header'
-    'main'
-    'footer';
-}
-
-#app > header {
-  grid-area: header;
-}
-
-#app > main {
-  grid-area: main;
-  overflow: auto;
-  padding: 15px 5px 10px 5px;
-}
-
-#app > footer {
-  grid-area: footer;
-}
-
 
 /*Buttons*/
 button {

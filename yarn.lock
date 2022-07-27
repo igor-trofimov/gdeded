@@ -2698,11 +2698,6 @@ svelte-preprocess@^4.0.0, svelte-preprocess@^4.10.6:
     sorcery "^0.10.0"
     strip-indent "^3.0.0"
 
-svelte-virtual-list-ce@^3.1.0-beta.2:
-  version "3.1.0-beta.2"
-  resolved "https://registry.yarnpkg.com/svelte-virtual-list-ce/-/svelte-virtual-list-ce-3.1.0-beta.2.tgz#a9fee2305662eac49af9ac9bcdf13510953b0cc6"
-  integrity sha512-uS8BUtEglj5I18FMUtFjdSKKYSBD2DaSQ1PAiHMl8poo0m0qSjJZZm0C0bgY0w8/5le4fdDez9XvsgP8+r44Yg==
-
 svelte@^3.46.0:
   version "3.49.0"
   resolved "https://registry.yarnpkg.com/svelte/-/svelte-3.49.0.tgz#5baee3c672306de1070c3b7888fc2204e36a4029"

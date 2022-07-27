@@ -5,7 +5,6 @@
 <script lang="ts">
   import type { IPlay, ISpeech } from '$lib/types';
   import { longpress } from '$lib/longpress.js';
-  import VirtualList from 'svelte-virtual-list-ce';
   import { onMount } from 'svelte';
   import http from '$lib/http';
   import MediaControl from '$lib/MediaControl.svelte';
@@ -18,10 +17,8 @@
   let selectedItem: ISpeech;
   let editedItem: ISpeech;
   let selectedRole: string;
-  let scrollToIndex;
 
   const key = `speeches-for-${play.id}`;
-
   onMount(() => {
     const rawData = localStorage.getItem(key);
     speeches = rawData ? JSON.parse(rawData) : [];
@@ -58,10 +55,14 @@
     } else {
       selectedRole = role;
       const index = speeches.findIndex((r) => r.text.startsWith(role));
+      console.log(role, index);
       scrollToIndex(index);
     }
   };
-
+  const scrollToIndex = (idx) => {
+    const getMeTo = document.getElementById(idx);
+    getMeTo.scrollIntoView({ behavior: 'smooth' });
+  };
   const goto = (item) => {
     scrollToIndex(speeches.findIndex((s) => s.id === item.id));
     selectedItem = item;
@@ -89,92 +90,113 @@
   <title>{play.title}</title>
   <meta name="description" content="A todo list app" />
 </svelte:head>
-
-<header>
-  <div class="container d-flex align-items-center justify-content-between">
-    <a href="/">← Назад</a>
-    <h2>{play.title}</h2>
-    <div class="burger">
-      <svg viewBox="0 0 100 60" width="24" height="24">
-        <rect width="100" height="6"></rect>
-        <rect y="30" width="100" height="6"></rect>
-        <rect y="60" width="100" height="6"></rect>
-      </svg>
+<div class="play">
+  <header>
+    <div class="container d-flex align-items-center justify-content-between">
+      <a href="/">← Назад</a>
+      <h2>{play.title}</h2>
+      <div class="burger">
+        <svg viewBox="0 0 100 60" width="24" height="24">
+          <rect width="100" height="6"></rect>
+          <rect y="30" width="100" height="6"></rect>
+          <rect y="60" width="100" height="6"></rect>
+        </svg>
+      </div>
     </div>
-  </div>
-</header>
+  </header>
 
-<main class:filtered={selectedRole}>
-  <div class="roles">
-    {#each play.roles as role (role)}
-      <div class="role" class:active={role === selectedRole} on:click={() => toggleRole(role)}>{role}</div>
-    {/each}
-  </div>
-  {#if speeches.length > 0}
-    <VirtualList items={speeches} let:item bind:scrollToIndex>
-      <div
-        class="speech-item"
-        class:selected={selectedItem === item}
-        class:matched={item.text.startsWith(selectedRole)}
-        class:withAudio={item.audio_url}
-        on:click={() => handleClick(item)}
-        on:long={() => editedItem = item}
-        use:longpress
-      >
-        <div class="item-actions">
-          {#if play.active}
-            <Icon name="edit" onClick={() => editedItem = item} />
-          {/if}
+  <section class="container" class:filtered={selectedRole}>
+    <div class="roles">
+      {#each play.roles as role (role)}
+        <div class="role" class:active={role === selectedRole} on:click={() => toggleRole(role)}>{role}</div>
+      {/each}
+    </div>
+    {#if speeches.length > 0}
+      {#each speeches as item, i (item)}
+        <div
+          id={i}
+          class="speech-item"
+          class:selected={selectedItem === item}
+          class:matched={item.text.startsWith(selectedRole)}
+          class:withAudio={item.audio_url}
+          on:click={() => handleClick(item)}
+          on:long={() => editedItem = item}
+          use:longpress
+        >
+          <div class="item-actions">
+            {#if play.active}
+              <Icon name="edit" onClick={() => editedItem = item} />
+            {/if}
+          </div>
+          {@html item.text}
         </div>
-        {@html item.text}
+      {/each}
+    {:else}
+      <Loader />
+    {/if}
+  </section>
+  {#if play.active && editedItem}
+    <Modal on:close={close}>
+      <span slot="header">Редактирование текста</span>
+      <p contenteditable="true" bind:innerHTML={editedItem.text}>
+      </p>
+      <div class="d-flex justify-content-between" slot="footer">
+        <div>
+          <button class="btn-secondary" on:click={close}>
+            Отменить
+          </button>
+          <button class="btn-danger" on:click={() => handleDelete(editedItem)}>
+            Удалить
+          </button>
+        </div>
+
+        <button class="btn-primary" on:click={save}>
+          Сохранить
+        </button>
       </div>
-    </VirtualList>
-  {:else}
-    <Loader />
+    </Modal>
   {/if}
-</main>
-{#if play.active && editedItem}
-  <Modal on:close={close}>
-    <span slot="header">Редактирование текста</span>
-    <p contenteditable="true" bind:innerHTML={editedItem.text} autofocus>
-    </p>
-    <div class="d-flex justify-content-between" slot="footer">
-      <div>
-        <button class="btn-secondary" on:click={close}>
-          Отменить
-        </button>
-        <button class="btn-danger" on:click={() => handleDelete(editedItem)}>
-          Удалить
-        </button>
-      </div>
+  {#if selectedItem}
+    {#key selectedItem}
+      <footer>
+        <div class="container">
+          <MediaControl
+            audioUrl={selectedItem.audio_url}
+            onSave={(audio) => handleUpdate({ id: selectedItem.id, audio })}
+            onClickPrev={prevSpeechItem && (() => goto(prevSpeechItem))}
+            onClickNext={nextSpeechItem && (() => goto(nextSpeechItem))}
+            readonly={!play.active}
+          />
+        </div>
+      </footer>
+    {/key}
+  {/if}
 
-      <button class="btn-primary" on:click={save}>
-        Сохранить
-      </button>
-    </div>
-  </Modal>
-{/if}
-{#if selectedItem}
-  {#key selectedItem}
-    <footer>
-      <div class="container">
-        <MediaControl
-          audioUrl={selectedItem.audio_url}
-          onSave={(audio) => handleUpdate({ id: selectedItem.id, audio })}
-          onClickPrev={prevSpeechItem && (() => goto(prevSpeechItem))}
-          onClickNext={nextSpeechItem && (() => goto(nextSpeechItem))}
-          readonly={!play.active}
-        />
-      </div>
-    </footer>
-  {/key}
-{/if}
-
+</div>
 
 <style>
+  .play {
+    display: flex;
+    flex-direction: column;
+  }
+
+  section {
+    flex: 1 1 auto;
+    position: relative; /* need this to position inner content */
+    overflow-y: auto;
+    padding-right: 12px;
+  }
+
   header {
+    flex: 0 0 auto;
     box-shadow: 0 1px 3px #ccc;
   }
+
+  footer {
+    flex: 0 0 auto;
+    border-top: 1px solid #ccc;
+  }
+
 
   .speech-item {
     cursor: pointer;
@@ -220,10 +242,6 @@
 
   .speech-item.withAudio {
     border-color: #cccccc;
-  }
-
-  footer {
-    border-top: 1px solid #ccc;
   }
 
   .role {
