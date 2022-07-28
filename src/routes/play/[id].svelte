@@ -89,21 +89,22 @@
   <title>{play.title}</title>
   <meta name="description" content="A todo list app" />
 </svelte:head>
-<div class="play">
-  <header>
-    <div class="container d-flex align-items-center justify-content-between">
-      <a href="/">← Назад</a>
-      <h2 class="cursor-pointer" on:click={() => scrollToIndex('roles')}>{play.title}</h2>
-      <div class="burger">
-        <svg viewBox="0 0 100 60" width="24" height="24">
-          <rect width="100" height="6"></rect>
-          <rect y="30" width="100" height="6"></rect>
-          <rect y="60" width="100" height="6"></rect>
-        </svg>
-      </div>
-    </div>
-  </header>
 
+<header>
+  <div class="container d-flex align-items-center justify-content-between">
+    <a href="/">← Назад</a>
+    <h2 class="cursor-pointer" on:click={() => scrollToIndex('roles')}>{play.title}</h2>
+    <div class="burger">
+      <svg viewBox="0 0 100 60" width="24" height="24">
+        <rect width="100" height="6"></rect>
+        <rect y="30" width="100" height="6"></rect>
+        <rect y="60" width="100" height="6"></rect>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<div class="play">
   <section class="container" class:filtered={selectedRole}>
     <div class="roles" id="roles">
       {#each play.roles as role (role)}
@@ -134,67 +135,79 @@
       <Loader />
     {/if}
   </section>
-  {#if play.active && editedItem}
-    <Modal on:close={close}>
-      <span slot="header">Редактирование текста</span>
-      <p contenteditable="true" bind:innerHTML={editedItem.text}>
-      </p>
-      <div class="d-flex justify-content-between" slot="footer">
-        <div>
-          <button class="btn-secondary" on:click={close}>
-            Отменить
-          </button>
-          <button class="btn-danger" on:click={() => handleDelete(editedItem)}>
-            Удалить
-          </button>
-        </div>
+</div>
+{#if selectedItem}
+  {#key selectedItem}
+    <footer>
+      <div class="container">
+        <MediaControl
+          audioUrl={selectedItem.audio_url}
+          onSave={(audio) => handleUpdate({ id: selectedItem.id, audio })}
+          onClickPrev={prevSpeechItem && (() => goto(prevSpeechItem))}
+          onClickNext={nextSpeechItem && (() => goto(nextSpeechItem))}
+          readonly={!play.active}
+        />
+      </div>
+    </footer>
+  {/key}
+{/if}
 
-        <button class="btn-primary" on:click={save}>
-          Сохранить
+{#if play.active && editedItem}
+  <Modal on:close={close}>
+    <span slot="header">Редактирование текста</span>
+    <p contenteditable="true" bind:innerHTML={editedItem.text}>
+    </p>
+    <div class="d-flex justify-content-between" slot="footer">
+      <div>
+        <button class="btn-secondary" on:click={close}>
+          Отменить
+        </button>
+        <button class="btn-danger" on:click={() => handleDelete(editedItem)}>
+          Удалить
         </button>
       </div>
-    </Modal>
-  {/if}
-  {#if selectedItem}
-    {#key selectedItem}
-      <footer>
-        <div class="container">
-          <MediaControl
-            audioUrl={selectedItem.audio_url}
-            onSave={(audio) => handleUpdate({ id: selectedItem.id, audio })}
-            onClickPrev={prevSpeechItem && (() => goto(prevSpeechItem))}
-            onClickNext={nextSpeechItem && (() => goto(nextSpeechItem))}
-            readonly={!play.active}
-          />
-        </div>
-      </footer>
-    {/key}
-  {/if}
-</div>
+
+      <button class="btn-primary" on:click={save}>
+        Сохранить
+      </button>
+    </div>
+  </Modal>
+{/if}
 
 <style>
   .play {
-    display: flex;
-    flex-direction: column;
+    position: absolute;
+    z-index: 1;
+    top: 45px;
+    bottom: 48px;
+    left: 0;
+    width: 100%;
+    overflow: auto;
   }
 
   section {
-    flex: 1 1 auto;
-    position: relative; /* need this to position inner content */
-    overflow-y: auto;
-    padding-right: 12px;
+    z-index: 1;
+    -webkit-overflow-scrolling: touch;
+    overflow: auto;
   }
 
   header {
-    flex: 0 0 auto;
+    top: 0;
     box-shadow: 0 1px 3px #ccc;
   }
 
   footer {
-    flex: 0 0 auto;
+    bottom: 0;
     border-top: 1px solid #ccc;
   }
 
+  header, footer {
+    position: fixed;
+    background-color: white;
+    width: 100%;
+    left: 0;
+    z-index: 2;
+  }
 
   .speech-item {
     cursor: pointer;
@@ -263,7 +276,7 @@
   .roles {
     display: flex;
     padding-bottom: 1rem;
-    margin-top: 0.5rem;
+    margin-top: 60px;
     overflow-x: auto;
   }
 
