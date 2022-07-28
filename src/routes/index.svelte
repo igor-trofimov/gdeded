@@ -4,7 +4,7 @@
 
 <script lang="ts">
   import type { IPlay } from '$lib/types';
-  import ded from '$lib/icon/ded.svg'
+  import ded from '$lib/icon/ded.svg';
 
   export let plays: IPlay[];
 </script>
@@ -16,9 +16,10 @@
 
 <section>
   <h1>А Где Дед?</h1>
-  <img src={ded} width="100px" alt="Где был дед">
+  <div class="text-center"><img src={ded} width="100px" alt="Где был дед"></div>
 
-  <h2 class="mb-5 p-3">Помощник в заучивании сценариев для спектаклей</h2>
+
+  <h2 class="mb-5 p-3 text-center">Помощник в заучивании сценариев для спектаклей</h2>
 
   <ul>
     {#each plays as play (play)}
@@ -36,21 +37,19 @@
 
 <style>
   section {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    flex: 1;
+    height: 100vh;
+    overflow: auto;
   }
 
   h1 {
     width: 100%;
+    text-align: center;
   }
 
   ul {
     list-style: none;
     margin: 0;
-    padding: 0;
+    padding: 1rem;
   }
 
   li {
@@ -58,9 +57,12 @@
     padding: 1rem;
     box-shadow: 0 0 3px var(--primary-color);
     border-radius: 1rem;
-    width: 300px;
+    width: 100%;
+    max-width: 600px;
+    box-sizing: border-box;
   }
-  h3  {
+
+  h3 {
     margin-top: 0;
     margin-bottom: 1rem;
   }

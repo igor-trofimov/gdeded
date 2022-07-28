@@ -175,6 +175,10 @@ button:focus:not(:focus-visible) {
   justify-content: center;
 }
 
+.text-center {
+  text-align: center;
+}
+
 .flex-1 {
   flex: 1
 }

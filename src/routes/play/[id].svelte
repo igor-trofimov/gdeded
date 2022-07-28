@@ -276,7 +276,7 @@
   .roles {
     display: flex;
     padding-bottom: 1rem;
-    margin-top: 60px;
+    margin-top: 24px;
     overflow-x: auto;
   }
 
