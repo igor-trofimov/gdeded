@@ -48,8 +48,9 @@
 
   ul {
     list-style: none;
-    margin: 0;
+    margin: auto;
     padding: 1rem;
+    max-width: 600px;
   }
 
   li {
