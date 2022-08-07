@@ -18,6 +18,10 @@
   let editedItem: ISpeech;
   let selectedRole: string;
   let showRoleSelect = false;
+  let showSearch = false;
+  let searchTerm = '';
+  let value = '';
+  let searchIndex = 0;
 
   const key = `speeches-for-${play.id}`;
   onMount(() => {
@@ -29,6 +33,15 @@
     });
   });
 
+  const handleSearchClick = () => {
+    if (showSearch) {
+      searchTerm = '';
+      showSearch = false;
+      searchIndex = 0;
+    } else {
+      showSearch = true;
+    }
+  };
   const handleUpdate = (data) => {
     if (data.audio) {
       let formData = new FormData();
@@ -81,9 +94,19 @@
       });
   };
 
+  const onClickPrev = () => {
+    searchIndex = searchIndex > 0 ? searchIndex - 1 : 0;
+    scrollToIndex(foundItems[searchIndex].id);
+  };
+  const onClickNext = () => {
+    searchIndex = searchIndex < foundItems.length ? searchIndex + 1 : foundItems.length;
+    scrollToIndex(foundItems[searchIndex].id);
+  };
+
   $: currentIndex = speeches.findIndex((s) => s.id === selectedItem?.id);
   $: prevSpeechItem = speeches.slice(0, currentIndex - 1).reverse().find((s) => s.audio_url);
   $: nextSpeechItem = speeches.slice(currentIndex + 1).find((s) => s.audio_url);
+  $: foundItems = searchTerm ? speeches.filter((s) => s.text.includes(searchTerm)) : speeches;
 </script>
 
 <svelte:head>
@@ -96,15 +119,15 @@
     <a href="/">← Назад</a>
     <h2 class="cursor-pointer" on:click={() => scrollToIndex('roles')}>{play.title}</h2>
     <div class="d-flex">
-      <Icon name="search" className="mr-3" />
+      <Icon name="search" className="mr-3" onClick={handleSearchClick} />
       <Icon name="users" onClick={() => showRoleSelect = !showRoleSelect} />
-<!--      <div class="burger">-->
-<!--        <svg viewBox="0 0 100 60" width="24" height="24">-->
-<!--          <rect width="100" height="6"></rect>-->
-<!--          <rect y="30" width="100" height="6"></rect>-->
-<!--          <rect y="60" width="100" height="6"></rect>-->
-<!--        </svg>-->
-<!--      </div>-->
+      <!--      <div class="burger">-->
+      <!--        <svg viewBox="0 0 100 60" width="24" height="24">-->
+      <!--          <rect width="100" height="6"></rect>-->
+      <!--          <rect y="30" width="100" height="6"></rect>-->
+      <!--          <rect y="60" width="100" height="6"></rect>-->
+      <!--        </svg>-->
+      <!--      </div>-->
     </div>
   </div>
   {#if showRoleSelect}
@@ -135,7 +158,7 @@
               <Icon name="edit" onClick={() => editedItem = item} />
             {/if}
           </div>
-          {@html item.text}
+          {@html item.text.replace(searchTerm, `<strong>${searchTerm}</strong>`)}
         </div>
       {/each}
     {:else}
@@ -143,6 +166,31 @@
     {/if}
   </section>
 </div>
+
+{#if showSearch}
+  {#key searchTerm}
+    <footer>
+      <div class="container">
+        <div class="d-flex align-items-center justify-content-between p-3">
+          <div class="d-flex align-items-center">
+            {#if foundItems.length > 0}
+              <Icon name="prev" onClick={onClickPrev} title="Предыдущая запись" />
+              <Icon name="next" onClick={onClickNext} title="Следующая запись" />
+            {/if}
+            {#if searchTerm}
+              {searchIndex + 1} / {foundItems.length}
+            {/if}
+          </div>
+          <div class="d-flex align-items-center">
+            <input type="text" bind:value class="mr-3">
+            <Icon name="search" onClick={() => searchTerm = value} />
+          </div>
+        </div>
+      </div>
+    </footer>
+  {/key}
+{/if}
+
 {#if selectedItem}
   {#key selectedItem}
     <footer>
