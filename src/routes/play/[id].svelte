@@ -17,6 +17,7 @@
   let selectedItem: ISpeech;
   let editedItem: ISpeech;
   let selectedRole: string;
+  let showRoleSelect = false;
 
   const key = `speeches-for-${play.id}`;
   onMount(() => {
@@ -94,23 +95,29 @@
   <div class="container d-flex align-items-center justify-content-between">
     <a href="/">← Назад</a>
     <h2 class="cursor-pointer" on:click={() => scrollToIndex('roles')}>{play.title}</h2>
-    <div class="burger">
-      <svg viewBox="0 0 100 60" width="24" height="24">
-        <rect width="100" height="6"></rect>
-        <rect y="30" width="100" height="6"></rect>
-        <rect y="60" width="100" height="6"></rect>
-      </svg>
+    <div class="d-flex">
+      <Icon name="search" className="mr-3" />
+      <Icon name="users" onClick={() => showRoleSelect = !showRoleSelect} />
+<!--      <div class="burger">-->
+<!--        <svg viewBox="0 0 100 60" width="24" height="24">-->
+<!--          <rect width="100" height="6"></rect>-->
+<!--          <rect y="30" width="100" height="6"></rect>-->
+<!--          <rect y="60" width="100" height="6"></rect>-->
+<!--        </svg>-->
+<!--      </div>-->
     </div>
   </div>
-</header>
-
-<div class="play">
-  <section class="container" class:filtered={selectedRole}>
-    <div class="roles" id="roles">
+  {#if showRoleSelect}
+    <div class="roles container" id="roles">
       {#each play.roles as role (role)}
         <div class="role" class:active={role === selectedRole} on:click={() => toggleRole(role)}>{role}</div>
       {/each}
     </div>
+  {/if}
+</header>
+
+<div class="play">
+  <section class="container" class:filtered={selectedRole}>
     {#if speeches.length > 0}
       {#each speeches as item, i (item)}
         <div

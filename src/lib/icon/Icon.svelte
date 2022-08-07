@@ -11,6 +11,8 @@
   import cross from './cross.svg';
   import edit from './edit.svg';
   import trash from './trash.svg';
+  import users from './users.svg';
+  import search from './search.svg';
 
   const icons = {
     mic,
@@ -22,16 +24,17 @@
     stop,
     listen,
     ded,
-    cross, edit, trash
+    cross, edit, trash, users, search
   };
 
   type iconNames = 'mic' | 'next' | 'pause' | 'play' | 'prev' | 'save' | 'stop' | 'listen' | 'ded' | 'cross' | 'edit' | 'trash'
   export let name: iconNames;
   export let title = '';
+  export let className = '';
   export let onClick;
 </script>
 
-<div class="icon" title={title} on:click={onClick}>
+<div class="icon {className}" title={title} on:click={onClick}>
   <img src={icons[name]} alt={title} />
 </div>
 
