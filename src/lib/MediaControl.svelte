@@ -30,6 +30,7 @@
 
   const stop = () => {
     mediaRecorder.stop();
+    mediaRecorder.stream.getTracks().forEach((track) => track.stop());
     mediaRecorder = null;
   };
 
